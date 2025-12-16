@@ -3,7 +3,8 @@ permissions: write-all
 
 on:
   push:
-    tags: [ "*" ]
+    # tags: [ "*" ]
+    branches: [ main ]
 
 jobs:
   build:
