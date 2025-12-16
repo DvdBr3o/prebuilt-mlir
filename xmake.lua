@@ -76,13 +76,17 @@ package("mlir")
             -- Build job and link job together will oom
             "-DCMAKE_JOB_POOL_LINK=console",
 
-            "-DLLVM_ENABLE_PROJECTS=lld;mlir",
+            "-DLLVM_ENABLE_PROJECTS=mlir",
 
             -- Build all targets, this will affect the builtin type generation.
             -- Users might use a cross-compiler, and to ensure clang works in 
             -- that scenario, we have to build all targets.
             "-DLLVM_TARGETS_TO_BUILD=all"
         }
+
+        -- if package:is_plat("windows") then
+        --     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
+        -- end 
 
         local build_type = {
             ["debug"] = "Debug",
