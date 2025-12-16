@@ -7,8 +7,17 @@ add_requires("mlir", {
     },
 })
 
+local sparse_checkout_list = {
+    "cmake",
+    "llvm",
+    "clang",
+    "clang-tools-extra",
+    "third-party",
+}
+
 package("mlir")
-    add_urls("https://mirrors.tuna.tsinghua.edu.cn/git/llvm-project.git")
+    -- add_urls("https://mirrors.tuna.tsinghua.edu.cn/git/llvm-project.git")
+    add_urls("https://github.com/llvm/llvm-project.git", {alias = "git", includes = sparse_checkout_list})
     add_versions("git:21.1.7", "llvmorg-21.1.7")
     add_versions("git:20.1.5", "llvmorg-20.1.5")
 
