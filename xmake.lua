@@ -1,3 +1,12 @@
+add_requires("mlir", {
+    system = false,
+    configs = {
+        mode = get_config("mode"),
+        debug = is_mode("debug"),
+        shared = is_mode("debug") and not is_plat("windows"),
+    },
+})
+
 package("mlir")
     add_urls("https://mirrors.tuna.tsinghua.edu.cn/git/llvm-project.git")
     add_versions("git:21.1.7", "llvmorg-21.1.7")
