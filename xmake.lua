@@ -21,6 +21,18 @@ package("mlir")
     add_versions("git:21.1.7", "llvmorg-21.1.7")
     add_versions("git:20.1.5", "llvmorg-20.1.5")
 
+    add_configs("mode", {description = "Build type", default = "releasedbg", type = "string", values = {"debug", "release", "releasedbg"}})
+
+    if is_plat("windows", "mingw") then
+        add_syslinks("version", "ntdll")
+    end
+
+    add_deps("cmake", "ninja", "python 3.x", {kind = "binary"})
+
+    if is_host("windows") then
+        set_policy("platform.longpaths", true)
+    end
+
     on_load(function (package)
     end)
 
