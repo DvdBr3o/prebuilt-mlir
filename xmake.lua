@@ -81,7 +81,9 @@ package("mlir")
             -- Build all targets, this will affect the builtin type generation.
             -- Users might use a cross-compiler, and to ensure clang works in 
             -- that scenario, we have to build all targets.
-            "-DLLVM_TARGETS_TO_BUILD=all"
+            "-DLLVM_TARGETS_TO_BUILD=all",
+
+            "-DLLVM_CCACHE_BUILD=ON",
         }
 
         -- if package:is_plat("macosx") then
@@ -89,6 +91,11 @@ package("mlir")
         --     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
         -- else
         --     table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
+        -- end
+
+        -- if package:is_plat("macosx", "linux") then
+        --     table.insert(configs, "-DCMAKE_C_COMPILER=clang")
+        --     table.insert(configs, "-DCMAKE_CXX_COMPILER=clang++")
         -- end
 
         -- if package:is_plat("windows") then
@@ -112,6 +119,7 @@ package("mlir")
         if package:is_plat("windows") then
             table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
             table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
+            table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
         elseif package:is_plat("linux") then
             table.insert(configs, "-DLLVM_USE_LINKER=lld")
             -- table.insert(configs, "-DLLVM_USE_SPLIT_DWARF=ON")
