@@ -84,6 +84,13 @@ package("mlir")
             "-DLLVM_TARGETS_TO_BUILD=all"
         }
 
+        -- if package:is_plat("macosx") then
+        --     table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
+        --     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
+        -- else
+        --     table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
+        -- end
+
         -- if package:is_plat("windows") then
         --     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
         -- end 
