@@ -10,8 +10,9 @@ add_requires("mlir", {
 local sparse_checkout_list = {
     "cmake",
     "llvm",
-    "clang",
-    "clang-tools-extra",
+    -- "clang",
+    "mlir",
+    -- "clang-tools-extra",
     "third-party",
 }
 
