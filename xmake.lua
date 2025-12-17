@@ -119,7 +119,6 @@ package("mlir")
         if package:is_plat("windows") then
             table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
             table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
-            table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
             table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
         elseif package:is_plat("linux") then
             table.insert(configs, "-DLLVM_USE_LINKER=lld")
