@@ -76,7 +76,7 @@ package("mlir")
             -- Build job and link job together will oom
             "-DCMAKE_JOB_POOL_LINK=console",
 
-            "-DLLVM_ENABLE_PROJECTS=mlir",
+            -- "-DLLVM_ENABLE_PROJECTS=mlir",
 
             -- Build all targets, this will affect the builtin type generation.
             -- Users might use a cross-compiler, and to ensure clang works in 
@@ -120,14 +120,17 @@ package("mlir")
             table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
             table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
             table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
+            table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
         elseif package:is_plat("linux") then
             table.insert(configs, "-DLLVM_USE_LINKER=lld")
+            table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
             -- table.insert(configs, "-DLLVM_USE_SPLIT_DWARF=ON")
         elseif package:is_plat("macosx") then
             table.insert(configs, "-DCMAKE_OSX_ARCHITECTURES=arm64")
             table.insert(configs, "-DCMAKE_LIBTOOL=/opt/homebrew/opt/llvm@20/bin/llvm-libtool-darwin")
             table.insert(configs, "-DLLVM_USE_LINKER=lld")
             table.insert(configs, "-DLLVM_ENABLE_LIBCXX=ON")
+            table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
         end
 
         os.cd("llvm")
