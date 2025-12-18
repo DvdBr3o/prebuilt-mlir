@@ -116,6 +116,7 @@ function main()
 			"gh",
 			{ "release", "create", tag, "--title", "Prebuilt LLVM mlir " .. tag, "--notes", '"Auto publish."' }
 		),
+		catch({ function(err) end }),
 	})
 
 	print(binaries)
