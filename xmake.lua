@@ -57,7 +57,7 @@ package("mlir")
             "-DLLVM_INCLUDE_BENCHMARKS=OFF",
             "-DLLVM_INCLUDE_DOCS=OFF",
             "-DLLVM_BUILD_UTILS=OFF",
-            "-DLLVM_BUILD_TOOLS=ON",
+            
             -- "-DLLVM_INCLUDE_TOOLS=OFF",
             "-DCLANG_BUILD_TOOLS=OFF",
             "-DCLANG_INCLUDE_DOCS=OFF",
@@ -68,8 +68,7 @@ package("mlir")
             "-DCLANG_TOOL_LIBCLANG_BUILD=OFF",
             "-DCLANG_ENABLE_CLANGD=OFF",
             "-DLLVM_BUILD_LLVM_C_DYLIB=OFF",
-
-            "-DLLVM_LINK_LLVM_DYLIB=ON",
+            
             "-DLLVM_ENABLE_RTTI=OFF",
 
             "-DLLVM_PARALLEL_LINK_JOBS=1",
@@ -78,7 +77,7 @@ package("mlir")
             "-DCMAKE_JOB_POOL_LINK=console",
 
             -- "-DLLVM_ENABLE_PROJECTS=mlir",
-            "-DMLIR_LINK_MLIR_DYLIB=ON",
+            
 
             -- Build all targets, this will affect the builtin type generation.
             -- Users might use a cross-compiler, and to ensure clang works in 
@@ -111,6 +110,10 @@ package("mlir")
         table.insert(configs, "-DCMAKE_BUILD_TYPE=" .. (build_type[package:config("mode")]))
         table.insert(configs, "-DBUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
         table.insert(configs, "-DLLVM_ENABLE_LTO=" .. (package:config("lto") and "ON" or "OFF"))
+        table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:is_mode("debug") and "ON" or "OFF"))
+        table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:is_mode("debug") and "ON" or "OFF"))
+        table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:is_mode("debug") and "ON" or "OFF"))
+        
 
         if package:config("mode") == "debug" then
             table.insert(configs, "-DLLVM_USE_SANITIZER=Address")
