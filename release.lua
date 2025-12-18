@@ -112,10 +112,12 @@ function main()
 
 	-- gh release create "$TAG" --title "Prebuilt LLVM mlir $TAG" --notes "Auto publish."
 	try({
-		os.execv(
-			"gh",
-			{ "release", "create", tag, "--title", "Prebuilt LLVM mlir " .. tag, "--notes", '"Auto publish."' }
-		),
+		function()
+			os.execv(
+				"gh",
+				{ "release", "create", tag, "--title", "Prebuilt LLVM mlir " .. tag, "--notes", '"Auto publish."' }
+			)
+		end,
 		catch({ function(err) end }),
 	})
 
