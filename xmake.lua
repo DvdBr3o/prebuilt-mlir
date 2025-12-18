@@ -57,7 +57,7 @@ package("mlir")
             "-DLLVM_INCLUDE_BENCHMARKS=OFF",
             "-DLLVM_INCLUDE_DOCS=OFF",
             "-DLLVM_BUILD_UTILS=OFF",
-            "-DLLVM_BUILD_TOOLS=OFF",
+            "-DLLVM_BUILD_TOOLS=ON",
             -- "-DLLVM_INCLUDE_TOOLS=OFF",
             "-DCLANG_BUILD_TOOLS=OFF",
             "-DCLANG_INCLUDE_DOCS=OFF",
@@ -134,8 +134,18 @@ package("mlir")
             table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
         end
 
+        local opt = {}
+        opt.target = {
+            "install",
+            "mlir-opt",
+            "mlir-tblgen",
+            "mlir-lsp-shader",
+            "tblgen-lsp-shader",
+            -- TODO:
+        }
+
         os.cd("llvm")
-        import("package.tools.cmake").install(package, configs)
+        import("package.tools.cmake").install(package, configs, opt)
 
         if package:is_plat("windows") then
             for _, file in ipairs(os.files(package:installdir("bin/*"))) do
