@@ -69,7 +69,7 @@ package("mlir")
             "-DCLANG_ENABLE_CLANGD=OFF",
             "-DLLVM_BUILD_LLVM_C_DYLIB=OFF",
 
-            "-DLLVM_LINK_LLVM_DYLIB=OFF",
+            "-DLLVM_LINK_LLVM_DYLIB=ON",
             "-DLLVM_ENABLE_RTTI=OFF",
 
             "-DLLVM_PARALLEL_LINK_JOBS=1",
@@ -78,13 +78,12 @@ package("mlir")
             "-DCMAKE_JOB_POOL_LINK=console",
 
             -- "-DLLVM_ENABLE_PROJECTS=mlir",
+            "-DMLIR_LINK_MLIR_DYLIB=ON",
 
             -- Build all targets, this will affect the builtin type generation.
             -- Users might use a cross-compiler, and to ensure clang works in 
             -- that scenario, we have to build all targets.
             "-DLLVM_TARGETS_TO_BUILD=all",
-
-            -- "-DLLVM_CCACHE_BUILD=ON",
         }
 
         -- if package:is_plat("macosx") then
@@ -137,15 +136,15 @@ package("mlir")
         os.cd("llvm")
         import("package.tools.cmake").install(package, configs)
 
-        if package:is_plat("windows") then
-            for _, file in ipairs(os.files(package:installdir("bin/*"))) do
-                if not file:endswith(".dll") then
-                    os.rm(file)
-                end
-            end
-        elseif package:is_plat("linux") then
-            os.rm(package:installdir("bin/*"))
-        end
+        -- if package:is_plat("windows") then
+        --     for _, file in ipairs(os.files(package:installdir("bin/*"))) do
+        --         if not file:endswith(".dll") then
+        --             os.rm(file)
+        --         end
+        --     end
+        -- elseif package:is_plat("linux") then
+        --     os.rm(package:installdir("bin/*"))
+        -- end
 
         local abi
         local format
