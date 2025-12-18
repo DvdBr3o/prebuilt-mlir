@@ -15,62 +15,6 @@ function _get_current_tag()
 end
 
 -- @param llvm_archive string
-function _get_require_libs(llvm_archive)
-	git.clone("https://github.com/clice-io/clice.git", { treeless = true })
-	local old_dir = os.cd("clice")
-
-	os.mkdir("package")
-	os.mkdir("package/backup")
-	archive.extract(llvm_archive, "package/llvm")
-	-- Use --project to specify the clice project and avoid xmake finding parent directory xmake.lua
-	local argv = {
-		"config",
-		"--yes",
-		"--clean",
-		"--project=.",
-		"--llvm=package/llvm",
-	}
-	if is_host("linux") then
-		table.insert(argv, "--toolchain=clang-20")
-	else
-		table.insert(argv, "--toolchain=clang")
-	end
-	if is_host("macosx") then
-		table.insert(argv, "--sdk=/opt/homebrew/opt/llvm@20")
-	end
-	os.vrunv(os.programfile(), argv)
-	os.vexecv(os.programfile(), { "--project=." })
-
-	local unused_libs = {}
-	local libs = table.join(os.files("build/.packages/**.lib"), os.files("build/.packages/**.a"))
-	for _, lib in ipairs(libs) do
-		printf("checking %s...", path.basename(lib))
-		os.vmv(lib, "package/backup")
-		-- Force xmake fetch package and avoid xmake using package cache
-		os.vrunv(os.programfile(), argv)
-		try({
-			function()
-				os.vrunv(os.programfile(), { "--project=." })
-				table.insert(unused_libs, path.basename(lib))
-				cprint("${bright red} unused.")
-			end,
-
-			catch({
-				function(errors)
-					cprint("${bright green} require!")
-					os.vmv(path.join("package/backup", path.filename(lib)), path.directory(lib))
-				end,
-			}),
-		})
-	end
-	print("build %d libs, unused %d libs", #libs, #unused_libs)
-
-	os.cd(old_dir)
-	os.rm("clice")
-	return unused_libs
-end
-
--- @param llvm_archive string
 -- @param unused_libs array
 -- @return archive_file string
 function _reduce_package_size(llvm_archive, unused_libs)
@@ -141,27 +85,11 @@ function main()
 		os.execv("gh", { "run", "download", run_id, "--dir", dir }, { envs = envs })
 	end
 
-	local origin_files = {}
-	table.join2(origin_files, os.files(path.join(dir, "**.7z")))
-	table.join2(origin_files, os.files(path.join(dir, "**.tar.xz")))
-
-	local unused_libs
-	for _, llvm_archive in ipairs(origin_files) do
-		if llvm_archive:find("releasedbg") and llvm_archive:find("lto_n") then
-			unused_libs = _get_require_libs(path.absolute(llvm_archive))
-			break
-		end
-	end
-	if not unused_libs then
-		print("No unused libs?")
-	end
-
-	print(origin_files)
-
 	local files = {}
-	for _, llvm_archive in ipairs(origin_files) do
-		table.insert(files, _reduce_package_size(path.absolute(llvm_archive), unused_libs))
-	end
+	table.join2(files, os.files(path.join(dir, "**.7z")))
+	table.join2(files, os.files(path.join(dir, "**.tar.xz")))
+
+	print(files)
 
 	local binaries = {}
 	-- greater than 2 Gib?
@@ -176,6 +104,14 @@ function main()
 			table.insert(binaries, i)
 		end
 	end
+
+	-- gh release create "$TAG" --title "Prebuilt LLVM mlir $TAG" --notes "Auto publish."
+	try({
+		function()
+			os.execv("gh", { "release", "create", tag, "--title", tag, "--notes", "Auto publish." })
+		end,
+		catch({ function(err) end }),
+	})
 
 	print(binaries)
 	-- clobber: overwrite
