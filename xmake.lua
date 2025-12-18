@@ -110,9 +110,9 @@ package("mlir")
         table.insert(configs, "-DCMAKE_BUILD_TYPE=" .. (build_type[package:config("mode")]))
         table.insert(configs, "-DBUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
         table.insert(configs, "-DLLVM_ENABLE_LTO=" .. (package:config("lto") and "ON" or "OFF"))
-        table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:is_mode("debug") and "ON" or "OFF"))
-        table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:is_mode("debug") and "ON" or "OFF"))
-        table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:is_mode("debug") and "ON" or "OFF"))
+        table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
+        table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
+        table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:config("debug") and "ON" or "OFF"))
         
 
         if package:config("mode") == "debug" then
