@@ -134,18 +134,8 @@ package("mlir")
             table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
         end
 
-        local opt = {}
-        opt.target = {
-            "install",
-            "mlir-opt",
-            "mlir-tblgen",
-            "mlir-lsp-shader",
-            "tblgen-lsp-shader",
-            -- TODO:
-        }
-
         os.cd("llvm")
-        import("package.tools.cmake").install(package, configs, opt)
+        import("package.tools.cmake").install(package, configs)
 
         if package:is_plat("windows") then
             for _, file in ipairs(os.files(package:installdir("bin/*"))) do
