@@ -85,16 +85,11 @@ function main()
 		os.execv("gh", { "run", "download", run_id, "--dir", dir }, { envs = envs })
 	end
 
-	local origin_files = {}
-	table.join2(origin_files, os.files(path.join(dir, "**.7z")))
-	table.join2(origin_files, os.files(path.join(dir, "**.tar.xz")))
-
-	print(origin_files)
-
 	local files = {}
-	for _, llvm_archive in ipairs(origin_files) do
-		table.insert(files, _reduce_package_size(path.absolute(llvm_archive), unused_libs))
-	end
+	table.join2(files, os.files(path.join(dir, "**.7z")))
+	table.join2(files, os.files(path.join(dir, "**.tar.xz")))
+
+	print(files)
 
 	local binaries = {}
 	-- greater than 2 Gib?
@@ -113,10 +108,7 @@ function main()
 	-- gh release create "$TAG" --title "Prebuilt LLVM mlir $TAG" --notes "Auto publish."
 	try({
 		function()
-			os.execv(
-				"gh",
-				{ "release", "create", tag, "--title", "Prebuilt LLVM mlir " .. tag, "--notes", '"Auto publish."' }
-			)
+			os.execv("gh", { "release", "create", tag, "--title", tag, "--notes", "Auto publish." })
 		end,
 		catch({ function(err) end }),
 	})
