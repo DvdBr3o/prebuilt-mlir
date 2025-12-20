@@ -25,12 +25,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cleanup
-        uses: mathio/gha-cleanup@v1
-        with:
-          remove-browsers: true
-          verbose: true
-
       - name: Setup xmake
         uses: xmake-io/github-action-setup-xmake@v1
         with:
