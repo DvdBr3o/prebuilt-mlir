@@ -120,9 +120,8 @@ package("mlir")
         end
 
         if package:is_plat("windows") then
-            table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
-            table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
-            table.insert(configs, "-GNinja")
+            -- table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
+            -- table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
             -- table.insert(configs, "-DLLVM_OPTIMIZED_TABLEGEN=ON")
             -- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
             -- table.insert(configs, "-DLLVM_USE_LINKER=lld")
