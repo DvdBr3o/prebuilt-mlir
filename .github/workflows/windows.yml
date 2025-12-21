@@ -22,6 +22,26 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Cleanup Disk Space
+        run: |
+          Write-Host "Cleaning up ToolCache..."
+          if (Test-Path "$env:AGENT_TOOLSDIRECTORY") {
+              Get-ChildItem "$env:AGENT_TOOLSDIRECTORY" | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+          }
+          Write-Host "Cleaning up Android SDK and Large Tools..."
+          $paths = @(
+              "C:\Microsoft\AndroidSDK",
+              "C:\Program Files\Android",
+              "C:\Program Files\Java",
+              "C:\Program Data\Package Cache"
+          )
+          foreach ($path in $paths) {
+              if (Test-Path $path) {
+                  Write-Host "Removing $path"
+                  Remove-Item -Recurse -Force -Path $path -ErrorAction SilentlyContinue
+              }
+          }
+      
       - name: Checkout repository
         uses: actions/checkout@v4
 
