@@ -138,7 +138,17 @@ package("mlir")
         end
 
         os.cd("llvm")
-        import("package.tools.cmake").install(package, configs)
+        import("package.tools.cmake")
+
+        if package:is_plat("windows") then
+            --* seems that there is something about project race condition about msvc/clang-cl...
+            --* LNK: https://github.com/DvdBr3o/prebuilt-mlir/actions/runs/20406932570/job/58637984740
+            print("Fixing Windows MSBuild race condition: Pre-generating MLIR headers...")
+            cmake.build(package, configs, {target = "mlir-tablegen-targets"})
+            cmake.build(package, configs, {target = "mlir-headers"})
+        end
+        
+        cmake.install(package, configs)
 
         -- if package:is_plat("windows") then
         --     for _, file in ipairs(os.files(package:installdir("bin/*"))) do
