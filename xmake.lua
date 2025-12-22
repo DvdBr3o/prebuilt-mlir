@@ -24,7 +24,12 @@ add_versions("git:20.1.5", "llvmorg-20.1.5")
 
 add_configs(
 	"mode",
-	{ description = "Build type", default = "releasedbg", type = "string", values = { "debug", "release", "releasedbg" } }
+	{
+		description = "Build type",
+		default = "releasedbg",
+		type = "string",
+		values = { "debug", "release", "releasedbg" },
+	}
 )
 
 if is_plat("windows", "mingw") then
@@ -125,7 +130,7 @@ on_install(function(package)
 		-- table.insert(configs, "-DLLVM_OPTIMIZED_TABLEGEN=ON")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
 		-- table.insert(configs, "-DLLVM_USE_LINKER=lld")
-		table.insert(configs, '-G "Ninja"')
+		table.insert(configs, "-G Ninja")
 	elseif package:is_plat("linux") then
 		table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
@@ -199,4 +204,3 @@ on_install(function(package)
 	local checksum = hash.sha256(archive_file)
 	print(checksum)
 end)
-
