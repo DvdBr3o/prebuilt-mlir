@@ -146,7 +146,7 @@ on_install(function(package)
 	os.cd("llvm")
 	import("package.tools.cmake")
 
-	cmake.install(package, configs)
+	cmake.install(package, configs, {cmake_generator = "Ninja"})
 
 	-- if package:is_plat("windows") then
 	--     for _, file in ipairs(os.files(package:installdir("bin/*"))) do
