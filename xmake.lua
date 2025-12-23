@@ -22,15 +22,12 @@ add_urls("https://github.com/llvm/llvm-project.git", { alias = "git", includes =
 add_versions("git:21.1.7", "llvmorg-21.1.7")
 add_versions("git:20.1.5", "llvmorg-20.1.5")
 
-add_configs(
-	"mode",
-	{
-		description = "Build type",
-		default = "releasedbg",
-		type = "string",
-		values = { "debug", "release", "releasedbg" },
-	}
-)
+add_configs("mode", {
+	description = "Build type",
+	default = "releasedbg",
+	type = "string",
+	values = { "debug", "release", "releasedbg" },
+})
 
 if is_plat("windows", "mingw") then
 	add_syslinks("version", "ntdll")
@@ -131,9 +128,10 @@ on_install(function(package)
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
 		-- table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		table.insert(configs, "-G Ninja")
-		table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
-		table.insert(configs, "-DLLVM_PARALLEL_COMPILE_JOBS=1")
+		-- table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
+		-- table.insert(configs, "-DLLVM_PARALLEL_COMPILE_JOBS=1")
 		table.insert(configs, "-DLLVM_BUILD_LLVM_C_DYLIB=ON")
+		table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
 	elseif package:is_plat("linux") then
 		table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
@@ -149,7 +147,7 @@ on_install(function(package)
 	os.cd("llvm")
 	import("package.tools.cmake")
 
-	cmake.install(package, configs, {cmake_generator = "Ninja"})
+	cmake.install(package, configs, { cmake_generator = "Ninja" })
 
 	-- if package:is_plat("windows") then
 	--     for _, file in ipairs(os.files(package:installdir("bin/*"))) do
