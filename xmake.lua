@@ -125,12 +125,13 @@ on_install(function(package)
 	end
 
 	if package:is_plat("windows") then
-		-- table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
-		-- table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
+		table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
+		table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
 		-- table.insert(configs, "-DLLVM_OPTIMIZED_TABLEGEN=ON")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
 		-- table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		table.insert(configs, "-G Ninja")
+		table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
 	elseif package:is_plat("linux") then
 		table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
