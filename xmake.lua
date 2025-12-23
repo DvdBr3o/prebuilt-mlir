@@ -130,7 +130,7 @@ on_install(function(package)
 		-- table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
 		-- table.insert(configs, "-DLLVM_PARALLEL_COMPILE_JOBS=1")
 		table.insert(configs, "-DLLVM_BUILD_LLVM_C_DYLIB=ON")
-		table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
+		-- table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
 	elseif package:is_plat("linux") then
 		table.insert(configs, "-DLLVM_USE_LINKER=lld")
 		-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
