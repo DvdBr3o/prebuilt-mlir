@@ -24,23 +24,37 @@ jobs:
     steps:
       - name: Cleanup Disk Space
         run: |
-          Write-Host "Cleaning up ToolCache..."
-          if (Test-Path "$env:AGENT_TOOLSDIRECTORY") {
-              Get-ChildItem "$env:AGENT_TOOLSDIRECTORY" | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-          }
-          Write-Host "Cleaning up Android SDK and Large Tools..."
+          Write-Host "Initial Disk Usage:"
+          Get-PSDrive C | Select-Object Used, Free
           $paths = @(
+              "$env:AGENT_TOOLSDIRECTORY",
               "C:\Microsoft\AndroidSDK",
               "C:\Program Files\Android",
               "C:\Program Files\Java",
-              "C:\Program Data\Package Cache"
+              "C:\hostedtoolcache\windows\Ruby",
+              "C:\hostedtoolcache\windows\Go",
+              "C:\usr\local\share\boost",
+              "C:\ProgramData\Package Cache"
           )
           foreach ($path in $paths) {
               if (Test-Path $path) {
-                  Write-Host "Removing $path"
+                  Write-Host "Removing $path..."
                   Remove-Item -Recurse -Force -Path $path -ErrorAction SilentlyContinue
               }
           }
+          if (Get-Command docker -ErrorAction SilentlyContinue) {
+              Write-Host "Pruning Docker images..."
+              docker system prune --all --force --volumes
+          }
+          $tempPaths = @(
+              "$env:TEMP\*",
+              "$env:SystemRoot\Temp\*"
+          )
+          foreach ($temp in $tempPaths) {
+              Remove-Item -Recurse -Force $temp -ErrorAction SilentlyContinue
+          }
+          Write-Host "Final Disk Usage:"
+          Get-PSDrive C | Select-Object Used, Free
       
       - name: Checkout repository
         uses: actions/checkout@v4
