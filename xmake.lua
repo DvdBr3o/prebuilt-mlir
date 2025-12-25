@@ -19,7 +19,7 @@ local sparse_checkout_list = {
 package("mlir")
 	-- add_urls("https://mirrors.tuna.tsinghua.edu.cn/git/llvm-project.git")
 	add_urls("https://github.com/llvm/llvm-project.git", { alias = "git", includes = sparse_checkout_list })
-	add_versions("git:21.1.7", "llvmorg-21.1.7")
+	add_versions("git:21.1.8", "llvmorg-21.1.8")
 	add_versions("git:20.1.5", "llvmorg-20.1.5")
 
 	add_configs("mode", {
@@ -88,22 +88,6 @@ package("mlir")
 			"-DLLVM_TARGETS_TO_BUILD=all",
 		}
 
-		-- if package:is_plat("macosx") then
-		--     table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
-		--     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
-		-- else
-		--     table.insert(configs, "-DLLVM_ENABLE_PROJECTS=lld;mlir")
-		-- end
-
-		-- if package:is_plat("macosx", "linux") then
-		--     table.insert(configs, "-DCMAKE_C_COMPILER=clang")
-		--     table.insert(configs, "-DCMAKE_CXX_COMPILER=clang++")
-		-- end
-
-		-- if package:is_plat("windows") then
-		--     table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
-		-- end
-
 		local build_type = {
 			["debug"] = "Debug",
 			["release"] = "Release",
@@ -113,8 +97,8 @@ package("mlir")
 		table.insert(configs, "-DCMAKE_BUILD_TYPE=" .. build_type[package:config("mode")])
 		table.insert(configs, "-DBUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
 		table.insert(configs, "-DLLVM_ENABLE_LTO=" .. (package:config("lto") and "ON" or "OFF"))
-		table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:config("debug")  and "ON" or "OFF"))
-		table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. ((not package:is_plat("windows") and not package:config("debug")) and "ON" or "OFF"))
+		table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. ((not package:is_plat("windows") and not package:config("debug"))  and "ON" or "OFF"))
+		table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
 		table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:config("debug") and "ON" or "OFF"))
 
 		if package:config("mode") == "debug" then
@@ -124,38 +108,23 @@ package("mlir")
 		if package:is_plat("windows") then
 			table.insert(configs, "-DCMAKE_C_COMPILER=clang-cl")
 			table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
-			-- table.insert(configs, "-DLLVM_OPTIMIZED_TABLEGEN=ON")
-			-- table.insert(configs, "-G Ninja")
 			table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
 			table.insert(configs, "-DLLVM_PARALLEL_COMPILE_JOBS=1")
 			table.insert(configs, "-DLLVM_BUILD_LLVM_C_DYLIB=ON")
-			-- table.insert(configs, "-DLLVM_ENABLE_LLD=OFF")
 		elseif package:is_plat("linux") then
 			table.insert(configs, "-DLLVM_USE_LINKER=lld")
-			-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
 			-- table.insert(configs, "-DLLVM_USE_SPLIT_DWARF=ON")
 		elseif package:is_plat("macosx") then
 			table.insert(configs, "-DCMAKE_OSX_ARCHITECTURES=arm64")
 			table.insert(configs, "-DCMAKE_LIBTOOL=/opt/homebrew/opt/llvm@20/bin/llvm-libtool-darwin")
 			table.insert(configs, "-DLLVM_USE_LINKER=lld")
 			table.insert(configs, "-DLLVM_ENABLE_LIBCXX=ON")
-			-- table.insert(configs, "-DLLVM_ENABLE_PROJECTS=mlir")
 		end
 
 		os.cd("llvm")
 		import("package.tools.cmake")
 
 		cmake.install(package, configs, { cmake_generator = "Ninja" })
-
-		-- if package:is_plat("windows") then
-		--     for _, file in ipairs(os.files(package:installdir("bin/*"))) do
-		--         if not file:endswith(".dll") then
-		--             os.rm(file)
-		--         end
-		--     end
-		-- elseif package:is_plat("linux") then
-		--     os.rm(package:installdir("bin/*"))
-		-- end
 
 		local abi
 		local format
