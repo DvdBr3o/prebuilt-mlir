@@ -72,6 +72,7 @@ package("mlir")
 			"-DCLANG_TOOL_LIBCLANG_BUILD=OFF",
 			"-DCLANG_ENABLE_CLANGD=OFF",
 			"-DLLVM_BUILD_LLVM_C_DYLIB=OFF",
+			"-DLLVM_BUILD_TOOLS=OFF",
 
 			"-DLLVM_ENABLE_RTTI=OFF",
 
@@ -98,9 +99,9 @@ package("mlir")
 		table.insert(configs, "-DBUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
 		table.insert(configs, "-DLLVM_ENABLE_LTO=" .. (package:config("lto") and "ON" or "OFF"))
 		-- table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. ((not package:is_plat("windows") and not package:config("debug"))  and "ON" or "OFF"))
-		table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
-		table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
-		table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:config("debug") and "ON" or "OFF"))
+		-- table.insert(configs, "-DMLIR_LINK_MLIR_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
+		-- table.insert(configs, "-DLLVM_LINK_LLVM_DYLIB=" .. (not package:config("debug") and "ON" or "OFF"))
+		-- table.insert(configs, "-DLLVM_BUILD_TOOLS=" .. (not package:config("debug") and "ON" or "OFF"))
 
 		if package:config("mode") == "debug" then
 			table.insert(configs, "-DLLVM_USE_SANITIZER=Address")
@@ -111,7 +112,6 @@ package("mlir")
 			table.insert(configs, "-DCMAKE_CXX_COMPILER=clang-cl")
 			table.insert(configs, "-DCMAKE_BUILD_PARALLEL_LEVEL=1")
 			table.insert(configs, "-DLLVM_PARALLEL_COMPILE_JOBS=1")
-			table.insert(configs, "-DLLVM_BUILD_LLVM_C_DYLIB=ON")
 		elseif package:is_plat("linux") then
 			table.insert(configs, "-DLLVM_USE_LINKER=lld")
 			-- table.insert(configs, "-DLLVM_USE_SPLIT_DWARF=ON")
