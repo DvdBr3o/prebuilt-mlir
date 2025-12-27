@@ -28,9 +28,14 @@ jobs:
           Get-PSDrive C | Select-Object Used, Free
           $paths = @(
               "$env:AGENT_TOOLSDIRECTORY",
+              "$env:USERPROFILE\.nuget\packages",
+              "C:\ProgramData\Microsoft\VisualStudio\Packages",
               "C:\Microsoft\AndroidSDK",
               "C:\Program Files\Android",
               "C:\Program Files\Java",
+              "C:\Program Files\dotnet",
+              "C:\Program Files\LLVM",
+              "C:\Microsoft\Xamarin",
               "C:\hostedtoolcache\windows\Ruby",
               "C:\hostedtoolcache\windows\Go",
               "C:\usr\local\share\boost",
